@@ -49,7 +49,7 @@ export default function Counter() {
   const handleReset = () => {
     dispatch({ type: 'RESET' });
   };
-  console.log(state);
+  
   return (
     <main className={styles.main}>
       <h1 style={{ color: currentColor }}>{state.count}</h1>
