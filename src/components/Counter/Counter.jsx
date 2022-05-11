@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useReducer, useState, useEffect } from 'react';
 import styles from './Counter.css';
 
 const colors = {
@@ -7,43 +7,56 @@ const colors = {
   red: 'rgb(239, 68, 68)',
 };
 
+const initialState = { count: 0 };
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { ...state, count: state.count + 1 };
+    case 'DECREMENT':
+      return { ...state, count: state.count - 1 };
+    case 'RESET':
+      return { ...state, count: 0 };
+  }
+};
+
 export default function Counter() {
-  const [count, setCount] = useState(0);
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [currentColor, setCurrentColor] = useState(colors.yellow);
 
   useEffect(() => {
-    if (count === 0) {
+    if (state.count === 0) {
       setCurrentColor(colors.yellow);
     }
 
-    if (count > 0) {
+    if (state.count > 0) {
       setCurrentColor(colors.green);
     }
 
-    if (count < 0) {
+    if (state.count < 0) {
       setCurrentColor(colors.red);
     }
-  }, [count]);
+  }, [state.count]);
 
-  const increment = () => {
-    setCount((prevState) => prevState + 1);
+  const handleIncrement = () => {
+    dispatch({ type: 'INCREMENT' });
   };
 
-  const decrement = () => {
-    setCount((prevState) => prevState - 1);
+  const handleDecrement = () => {
+    dispatch({ type: 'DECREMENT' });
   };
 
-  const reset = () => {
-    setCount(0);
+  const handleReset = () => {
+    dispatch({ type: 'RESET' });
   };
-
+  
   return (
     <main className={styles.main}>
-      <h1 style={{ color: currentColor }}>{count}</h1>
+      <h1 style={{ color: currentColor }}>{state.count}</h1>
       <div>
         <button
           type="button"
-          onClick={increment}
+          onClick={handleIncrement}
           aria-label="increment"
           style={{ backgroundColor: colors.green }}
         >
@@ -51,7 +64,7 @@ export default function Counter() {
         </button>
         <button
           type="button"
-          onClick={decrement}
+          onClick={handleDecrement}
           aria-label="decrement"
           style={{ backgroundColor: colors.red }}
         >
@@ -60,7 +73,7 @@ export default function Counter() {
         <button
           type="button"
           aria-label="reset"
-          onClick={reset}
+          onClick={handleReset}
           style={{ backgroundColor: colors.yellow }}
         >
           Reset
